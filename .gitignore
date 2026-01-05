@@ -26,3 +26,7 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Data directory (ignore contents, keep structure)
+data/*
+!data/.gitkeep

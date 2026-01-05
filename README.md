@@ -71,7 +71,7 @@ The simplest way to train a new model:
 
 ```bash
 # Prepare your training data (tab-separated: text<TAB>category)
-cat > training_data.txt << EOF
+cat > data/training_data.txt << EOF
 I love this product!	positive
 This is terrible.	negative
 Amazing experience!	positive
@@ -79,7 +79,7 @@ Worst service ever	negative
 EOF
 
 # Train the model
-crystal run scripts/train_simple.cr -- training_data.txt my_model
+crystal run src/cadmium_models.cr train data/training_data.txt my_model
 
 # Move generated files to models directory
 mv my_model.model my_model.model.json metadata.yml models/<category>/
@@ -97,16 +97,12 @@ Multi-word text here	category1
 
 **Important:** Use tabs (`\t`) to separate the text from the category, not commas or spaces.
 
-### Training Scripts
+### Training CLI
 
-Two training scripts are provided:
-
-#### `train_simple.cr` - Quick Training
-
-For most use cases, the simple trainer is sufficient:
+The CLI provides a simple interface for training models:
 
 ```bash
-crystal run scripts/train_simple.cr -- <data_file> <model_name>
+crystal run src/cadmium_models.cr train <data_file> <model_name>
 ```
 
 **Features:**
@@ -118,7 +114,7 @@ crystal run scripts/train_simple.cr -- <data_file> <model_name>
 
 **Example:**
 ```bash
-crystal run scripts/train_simple.cr -- spam_data.txt spam_detector
+crystal run src/cadmium_models.cr train data/spam_data.txt spam_detector
 ```
 
 **Output:**
@@ -136,40 +132,12 @@ crystal run scripts/train_simple.cr -- spam_data.txt spam_detector
   - metadata.yml
 ```
 
-#### `train_model.cr` - Advanced Training
-
-For more control over training parameters:
-
-```bash
-crystal run scripts/train_model.cr -- \
-  --data training_data.txt \
-  --output my_model \
-  --categories spam,ham \
-  --test-split 0.2 \
-  --tokenizer word \
-  --format msgpack
-```
-
-**Options:**
-- `--data=FILE` - Training data file (required)
-- `--output=NAME` - Model name (default: model)
-- `--output-dir=DIR` - Output directory (default: .)
-- `--categories=CATS` - Comma-separated category names
-- `--test-split=RATIO` - Test split ratio (default: 0.2)
-- `--format=FORMAT` - Output format: msgpack or json (default: msgpack)
-- `--tokenizer=TOKENIZER` - Tokenizer: word or aggressive (default: word)
-- `--name=NAME` - Model name for metadata
-- `--description=DESC` - Model description
-- `--author=AUTHOR` - Author name/email
-- `--language=LANG` - Language code (default: en)
-- `--license=LICENSE` - License (default: MIT)
-
 ### Testing Your Model
 
 After training, verify your model works correctly:
 
 ```bash
-crystal run scripts/test_model.cr
+crystal run src/cadmium_models.cr test models/sentiment/sentiment_twitter.model
 ```
 
 This will load the model and run sample predictions to verify it's working.

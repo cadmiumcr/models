@@ -1,0 +1,23 @@
+name: cadmium_models
+version: 0.1.0
+authors:
+  - Cadmium Contributors
+  - watzon <watzon@users.noreply.github.com>
+
+crystal: 1.13.0
+
+license: MIT
+
+targets:
+  cadmium_models:
+    main: src/cadmium_models.cr
+
+dependencies:
+  cadmium_classifier:
+    github: cadmiumcr/classifier
+    version: ~> 0.2.0
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
+    version: ~> 1.6.0
