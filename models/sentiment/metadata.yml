@@ -1,0 +1,59 @@
+---
+name: sentiment
+version: 1.0.0
+description: Twitter sentiment analysis model trained on Sentiment140 data
+model_type: Bayes
+
+trained_on:
+  - dataset: Sentiment140
+    size: 50000
+    source: http://thinknook.com/wp-content/uploads/2012/09/Sentiment-Analysis-Dataset.zip
+    license: Other
+
+categories:
+  - negative
+  - positive
+
+vocabulary_size: 59978
+training_documents: 40000
+
+# Performance metrics
+accuracy: 0.7549
+
+precision:
+  negative: 0.7243
+  positive: 0.7857
+
+recall:
+  negative: 0.7728
+  positive: 0.739
+
+f1_score:
+  negative: 0.7478
+  positive: 0.7616
+
+# Language and locale
+language: en
+
+# Licensing
+license: Other
+
+# Metadata
+author: Cadmium Contributors
+created_at: 2026-01-05
+
+# Version requirements
+cadmium_version: ">= 0.2.0"
+
+# Tags for discoverability
+tags:
+  - sentiment
+  - social-media
+  - twitter
+  - english
+
+# Training configuration
+training_config:
+  test_split: 0.2
+  training_time_seconds: 1.12
+  trained_at: 2026-01-05T03:31:46Z

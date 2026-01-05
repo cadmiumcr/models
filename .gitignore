@@ -1,0 +1,28 @@
+# Crystal
+/.crystal/
+/.shards/
+/lib/
+*.dwarf
+
+# Training data
+training_data.txt
+test_data.txt
+*.csv
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
