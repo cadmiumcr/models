@@ -63,12 +63,151 @@ category = classifier.classify_category("This is terrible!")
 # => "negative"
 ```
 
+## Creating Models
+
+### Quick Start
+
+The simplest way to train a new model:
+
+```bash
+# Prepare your training data (tab-separated: text<TAB>category)
+cat > training_data.txt << EOF
+I love this product!	positive
+This is terrible.	negative
+Amazing experience!	positive
+Worst service ever	negative
+EOF
+
+# Train the model
+crystal run scripts/train_simple.cr -- training_data.txt my_model
+
+# Move generated files to models directory
+mv my_model.model my_model.model.json metadata.yml models/<category>/
+```
+
+### Training Data Format
+
+Training data must be tab-separated with the text content first and the category last:
+
+```
+Text content here	category1
+Another text sample	category2
+Multi-word text here	category1
+```
+
+**Important:** Use tabs (`\t`) to separate the text from the category, not commas or spaces.
+
+### Training Scripts
+
+Two training scripts are provided:
+
+#### `train_simple.cr` - Quick Training
+
+For most use cases, the simple trainer is sufficient:
+
+```bash
+crystal run scripts/train_simple.cr -- <data_file> <model_name>
+```
+
+**Features:**
+- Automatic 80/20 train/test split
+- Computes accuracy, precision, recall, F1 scores
+- Generates confusion matrix
+- Auto-creates metadata.yml with all metrics
+- Exports both MessagePack and JSON formats
+
+**Example:**
+```bash
+crystal run scripts/train_simple.cr -- spam_data.txt spam_detector
+```
+
+**Output:**
+```
+🚀 Starting model training...
+📚 Total samples: 10000
+📚 Training samples: 8000
+🧪 Test samples: 2000
+⏳ Training...
+✅ Training completed in 0.45 seconds
+📊 Accuracy: 98.2%
+📦 Generated files:
+  - spam_detector.model (245 KB)
+  - spam_detector.model.json (312 KB)
+  - metadata.yml
+```
+
+#### `train_model.cr` - Advanced Training
+
+For more control over training parameters:
+
+```bash
+crystal run scripts/train_model.cr -- \
+  --data training_data.txt \
+  --output my_model \
+  --categories spam,ham \
+  --test-split 0.2 \
+  --tokenizer word \
+  --format msgpack
+```
+
+**Options:**
+- `--data=FILE` - Training data file (required)
+- `--output=NAME` - Model name (default: model)
+- `--output-dir=DIR` - Output directory (default: .)
+- `--categories=CATS` - Comma-separated category names
+- `--test-split=RATIO` - Test split ratio (default: 0.2)
+- `--format=FORMAT` - Output format: msgpack or json (default: msgpack)
+- `--tokenizer=TOKENIZER` - Tokenizer: word or aggressive (default: word)
+- `--name=NAME` - Model name for metadata
+- `--description=DESC` - Model description
+- `--author=AUTHOR` - Author name/email
+- `--language=LANG` - Language code (default: en)
+- `--license=LICENSE` - License (default: MIT)
+
+### Testing Your Model
+
+After training, verify your model works correctly:
+
+```bash
+crystal run scripts/test_model.cr
+```
+
+This will load the model and run sample predictions to verify it's working.
+
+### Model File Organization
+
+Organize trained models by category:
+
+```
+models/
+├── sentiment/
+│   ├── sentiment_twitter.model
+│   ├── sentiment_twitter.model.json
+│   └── metadata.yml
+├── spam/
+│   ├── email_spam.model
+│   ├── email_spam.model.json
+│   └── metadata.yml
+└── language/
+    ├── lang_detector.model
+    ├── lang_detector.model.json
+    └── metadata.yml
+```
+
+### Best Practices
+
+1. **Data Quality** - Use clean, labeled data. Remove duplicates and obvious errors.
+2. **Dataset Size** - More data is generally better, but 10K-50K samples is often sufficient for good results.
+3. **Balanced Classes** - Try to have roughly equal samples per category for best accuracy.
+4. **Test Split** - Always reserve 20-30% of data for testing to validate performance.
+5. **Metadata** - Keep metadata.yml accurate and complete for model discoverability.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-- Training new models
 - Submitting models for inclusion
 - Model versioning and release process
+- Code quality standards
 
 ## License
 
